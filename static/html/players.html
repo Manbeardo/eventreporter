@@ -1,0 +1,56 @@
+<html>
+
+<header>
+    <script src="../static/etc/jquery.js"></script>
+    <script>
+    function load_table(response){
+        var c = [];
+        c.push("<tr><th>Name</th><th>Id</th></tr>")
+        $.each(response, function(i, item) {
+            c.push("<tr><td>" + item.Name + "</td>");
+            c.push("<td>" + item.Id + "</td></tr>");
+        });
+        $('#records_table').html(c.join(""));
+    }
+
+    $(document).ready(function(){
+        $('#list_all').click(function() {
+            $.getJSON("../backend/players/list", load_table);
+        });
+        $('#search_button').click(function() {
+            var params = $.param({
+                "Query": $('#search_query').val()
+            });
+            $.getJSON("../backend/players/search?" + params, load_table);
+        });
+        $('#create_button').click(function() {
+            var params = $.param({
+                "Name": $('#create_name').val(),
+                "Id":   $('#create_id').val()
+            });
+            $.getJSON("../backend/players/create?" + params, load_table);
+        });
+    });
+    </script>
+</header>
+<body>
+
+<h1>Players</h1>
+<button id="list_all">List All</button>
+<form>
+    <input id="search_button" type="button" value="Search">
+    <input id="search_query" type="text" name="Query">
+</form>
+<form>
+    <input id="create_button" type="button" value="Create Player">
+    Name:<input id="create_name" type="text">
+    Id:<input id="create_id" type="text">
+</form>
+<table id="records_table" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Id</th>
+    </tr>
+</table>
+</body>
+</html>
