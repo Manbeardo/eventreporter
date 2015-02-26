@@ -6,7 +6,9 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.coffee$/, loader: "coffee-loader" }
+            { test: /\.css$/,    loader: "style-loader!css-loader" },
+            { test: /\.coffee$/, loader: "coffee-loader"           },
+            { test: /\.jade$/,   loader: "jade-loader"             }
         ]
     }
 };

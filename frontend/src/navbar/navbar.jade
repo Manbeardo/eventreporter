@@ -1,0 +1,15 @@
+nav.navbar.navbar-default.navbar-fixed-top(ng-controller="navbarCtrl")
+  .container
+    .navbar-header
+      a.navbar-brand(ui-sref="home") Event Reporter
+      button.navbar-toggle(ng-click="isCollapsed = !isCollapsed")
+        span.sr-only Toggle Navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+    .navbar-collapse.navbar-right(collapse="isCollapsed")
+      ul.navbar-nav.nav
+        li
+          a(href="#test1") test1
+        li
+          a(href="#test2") test2
