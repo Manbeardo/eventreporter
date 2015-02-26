@@ -5,28 +5,20 @@ require 'angular-bootstrap'
 
 require './navbar/navbar.coffee'
 require './home/home.coffee'
+require './auth/auth.coffee'
 
 deps = [
   'eventreporter.navbar'
   'eventreporter.home'
+  'eventreporter.auth'
   'ui.bootstrap'
   'ui.router'
 ]
 
 mod = ng.module('main', deps)
 
-mod.config(($stateProvider, $urlRouterProvider)->
-  $urlRouterProvider.otherwise('/home')
-
-  $stateProvider.state('state1',
-    url: '/state1'
-    template: require('./state1.jade')()
-  )
-
-  $stateProvider.state('state2',
-    url: '/state2'
-    template: require('./state2.jade')()
-  )
+mod.config( ($urlRouterProvider)->
+  $urlRouterProvider.otherwise('/home') 
 )
 
 mod.directive('main', ()->

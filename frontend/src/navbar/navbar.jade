@@ -1,4 +1,4 @@
-nav.navbar.navbar-default.navbar-fixed-top(ng-controller="navbarCtrl")
+nav.navbar.navbar-default.navbar-fixed-top
   .container
     .navbar-header
       a.navbar-brand(ui-sref="home") Event Reporter
@@ -9,7 +9,17 @@ nav.navbar.navbar-default.navbar-fixed-top(ng-controller="navbarCtrl")
         span.icon-bar
     .navbar-collapse.navbar-right(collapse="isCollapsed")
       ul.navbar-nav.nav
-        li
-          a(href="#test1") test1
-        li
-          a(href="#test2") test2
+        li.dropdown(dropdown="", ng-show="LoginService.session.userid !== null")
+          a.dropdown-toggle(
+            href="",
+            dropdown-toggle="") {{LoginService.session.userid}}
+            span.caret
+          ul.dropdown-menu(role="menu")
+            li
+              a(ui-sref="user") View user page
+            li
+              a(ui-sref="editProfile") Edit profile
+            li
+              a(ng-click="LoginService.logout()") Sign out
+        li(ng-show="LoginService.session.userid == null")
+          a(ng-click="LoginService.login()") Sign in

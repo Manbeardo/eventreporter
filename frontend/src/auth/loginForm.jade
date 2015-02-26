@@ -1,0 +1,38 @@
+.modal-header
+  h3.modal-title Sign in
+.modal-body
+  form(
+    name="loginForm",
+    ng-submit="login(credentials)",
+    novalidate="")
+    .form-group.has-error(ng-show="invalidCredentials")
+      p.help-block Incorrect Username/Password
+    each field in [{name: "username", type: "text"}, {name: "password", type: "password"}]
+      - var invalid = "loginForm." + field.name + ".$invalid"
+      - var pristine = "loginForm." + field.name + ".$pristine"
+      - var invalidNotPristine = invalid + " && !" + pristine
+      .form-group(
+          ng-class="{ 'has-error': " + invalidNotPristine + " }"
+        )
+        label(
+          for=field, 
+          style="text-transform: capitalize;"
+        )= field.name + ":"
+        input.form-control(
+          type=field.type,
+          name=field.name,
+          ng-model="credentials." + field.name
+          required=""
+        )
+        p.help-block(
+          ng-show=invalidNotPristine,
+        )= field.name + " is required"
+    .form-group.btn-group
+      button.btn.btn-primary#LoginSubmit(
+        type="submit", 
+        ng-disabled="loginForm.$invalid"
+      ) Sign in
+      button.btn.btn-default#LoginCancel(
+        type="button", 
+        ng-click="cancel()"
+      ) Cancel
