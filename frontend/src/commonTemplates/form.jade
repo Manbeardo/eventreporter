@@ -1,0 +1,27 @@
+mixin form(desc)
+  form(
+    name=desc.name
+    ng-submit="#{desc.name}.submit(data)"
+    novalidata=""
+  )
+    .form-group.has-error(ng-show="#{desc.name}.errorMsg")
+      p.help-block {{#{desc.name}.errorMsg}}
+    each field, index in desc.fields
+      - var invalid = desc.name + "." + field.name + ".$invalid"
+      - var pristine = desc.name + "." + field.name + ".$pristine"
+      - var invalidNotPristine = invalid + " && !" + pristine
+      .form-group(
+        ng-class="{ 'has-error': #{invalidNotPristine} }"
+        )
+        label(
+          for=field.name
+        )= field.label
+        input.form-control(
+          type=field.type
+          name=field.name
+          ng-model="#{desc.model}.#{field.name}"
+        )&attributes(field.attrs)
+        p.help-block(
+          ng-show="#{invalidNotPristine} && #{field.errorMsg}"
+        )= field.errorMsg
+    block

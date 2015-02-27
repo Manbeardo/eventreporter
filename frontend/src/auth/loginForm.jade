@@ -2,12 +2,13 @@
   h3.modal-title Sign in
 .modal-body
   form(
-    name="loginForm",
-    ng-submit="login(credentials)",
-    novalidate="")
+    name="loginForm"
+    ng-submit="login(credentials)"
+    novalidate=""
+  )
     .form-group.has-error(ng-show="invalidCredentials")
       p.help-block Incorrect Username/Password
-    each field in [{name: "username", type: "text"}, {name: "password", type: "password"}]
+    each field, index in [{name: "username", type: "text"}, {name: "password", type: "password"}]
       - var invalid = "loginForm." + field.name + ".$invalid"
       - var pristine = "loginForm." + field.name + ".$pristine"
       - var invalidNotPristine = invalid + " && !" + pristine
@@ -18,21 +19,26 @@
           for=field, 
           style="text-transform: capitalize;"
         )= field.name + ":"
+        - var extraAttrs = {}
+        if index === 0
+          - extraAttrs.autofocus = ""
         input.form-control(
-          type=field.type,
-          name=field.name,
+          type=field.type
+          name=field.name
           ng-model="credentials." + field.name
           required=""
-        )
+        )&attributes(extraAttrs)
         p.help-block(
-          ng-show=invalidNotPristine,
+          ng-show=invalidNotPristine
         )= field.name + " is required"
-    .form-group.btn-group
+    .form-group
       button.btn.btn-primary#LoginSubmit(
-        type="submit", 
+        type="submit"
         ng-disabled="loginForm.$invalid"
       ) Sign in
+      | &nbsp;
       button.btn.btn-default#LoginCancel(
-        type="button", 
+        type="button"
         ng-click="cancel()"
       ) Cancel
+      a.pull-right.btn.btn-link(ui-sref="register", ng-click="cancel()") create a new account

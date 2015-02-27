@@ -1,0 +1,17 @@
+.container
+  section
+    h1 Create a seating.io account
+    form(
+      name="registerForm"
+      ng-submit="register(details)"
+      novalidate=""
+    )
+      .form-group
+        label(for="field") Username:
+        input.form-control(
+          type="text"
+          name="username"
+          ng-model="details.username"
+          required=""
+          autofocus=""
+          )

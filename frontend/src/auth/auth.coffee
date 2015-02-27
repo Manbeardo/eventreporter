@@ -1,13 +1,27 @@
 ng = require 'angular'
 
-mod = ng.module('eventreporter.auth', ['ui.bootstrap'])
+mod = ng.module('eventreporter.auth', ['ui.bootstrap', 'LocalStorageModule'])
 
-mod.factory('Session', ()->
+mod.config (localStorageServiceProvider)->
+  localStorageServiceProvider.setPrefix('eventreporter')
+  localStorageServiceProvider.setStorageType('sessionStorage')
+
+mod.factory 'Session', (localStorageService)->
+  storage = localStorageService
+
   {
-    id: null
-    userid: null
+    id: storage.get('sessionID') ? null
+    userid: storage.get('sessionUserID') ? null
+
+    setID: (id)->
+      @id = id
+      storage.set('sessionID', id)
+
+    setUserID: (userid)->
+      @userid = userid
+      storage.set('sessionUserID', userid)
   }
-)
+
 
 mod.factory('AuthService', (Session)->
   {
@@ -15,14 +29,8 @@ mod.factory('AuthService', (Session)->
       if credentials.password != 'foo'
         return false
 
-      Session.id = 1
-      Session.userid = credentials.username
-
-      return true
-
-    logout: ()->
-      Session.id = null
-      Session.userid = null
+      Session.setID 1
+      Session.setUserID credentials.username
 
       return true
 
@@ -35,7 +43,6 @@ mod.factory 'LoginService', ($modal, AuthService, Session)->
     login: ()->
       $modal.open
         template: require('./loginForm.jade')()
-        size: 'sm'
         controller: ($scope, $modalInstance, AuthService, Session)->
           $scope.invalidCredentials = false
 
@@ -51,8 +58,8 @@ mod.factory 'LoginService', ($modal, AuthService, Session)->
             $modalInstance.dismiss('cancel')
 
     logout: ()->
-      Session.id = null
-      Session.userid = null
+      Session.setID null
+      Session.setUserID null
       true
 
     session: Session

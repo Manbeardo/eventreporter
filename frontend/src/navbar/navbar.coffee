@@ -2,7 +2,11 @@ require './navbar.css'
 
 ng = require 'angular'
 
-mod = ng.module('eventreporter.navbar', ['ui.bootstrap', 'eventreporter.auth'])
+mod = ng.module 'eventreporter.navbar', [
+  'ui.bootstrap'
+  'ui.router'
+  'eventreporter.auth'
+]
 
 mod.directive('navbar', ()->
   {
@@ -12,7 +16,17 @@ mod.directive('navbar', ()->
   }
 )
 
-mod.controller('navbarCtrl', ($scope, LoginService) ->
+mod.controller 'navbarCtrl', ($scope, $rootScope, LoginService)->
   $scope.isCollapsed = true
-  $scope.LoginService = LoginService
-)
+  $scope.session = LoginService.session
+
+  $scope.login = ()->
+    LoginService.login()
+    $scope.isCollapsed = true
+
+  $scope.logout = ()->
+    LoginService.logout()
+    $scope.isCollapsed = true
+
+  $rootScope.$on '$stateChangeStart', ()->
+    $scope.isCollapsed = true

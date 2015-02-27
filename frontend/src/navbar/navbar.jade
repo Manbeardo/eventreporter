@@ -1,7 +1,7 @@
 nav.navbar.navbar-default.navbar-fixed-top
   .container
     .navbar-header
-      a.navbar-brand(ui-sref="home") Event Reporter
+      a.navbar-brand(ng-href="#/home") seating.io
       button.navbar-toggle(ng-click="isCollapsed = !isCollapsed")
         span.sr-only Toggle Navigation
         span.icon-bar
@@ -9,17 +9,18 @@ nav.navbar.navbar-default.navbar-fixed-top
         span.icon-bar
     .navbar-collapse.navbar-right(collapse="isCollapsed")
       ul.navbar-nav.nav
-        li.dropdown(dropdown="", ng-show="LoginService.session.userid !== null")
+        li.dropdown(dropdown="", ng-show="session.userid !== null")
           a.dropdown-toggle(
             href="",
-            dropdown-toggle="") {{LoginService.session.userid}}
+            dropdown-toggle="") {{session.userid}}&nbsp;
+            span.glyphicon.glyphicon-user
             span.caret
           ul.dropdown-menu(role="menu")
             li
-              a(ui-sref="user") View user page
+              a(ng-href="#/user/{{session.userid}}") View user page
             li
-              a(ui-sref="editProfile") Edit profile
+              a(ng-href="#/editProfile") Edit profile
             li
-              a(ng-click="LoginService.logout()") Sign out
-        li(ng-show="LoginService.session.userid == null")
-          a(ng-click="LoginService.login()") Sign in
+              a(href="", ng-click="logout()") Sign out
+        li(ng-show="session.userid == null")
+          a(href="", ng-click="login()") Sign in
