@@ -1,3 +1,66 @@
+mixin form-checkbox(desc, field)
+  .checkbox
+    label
+      input(
+        type=field.type
+        name=field.name
+        ng-model="#{desc.model}.#{field.name}"
+      )&attributes(field.attrs)
+      | #{field.label}
+
+mixin form-select(desc, field)
+  .form-group(
+    ng-class="{ 'has-error': #{field.options}.length === 0 }"
+  )
+    label= field.label
+    select.form-control(
+      ng-options="thing.name for thing in #{field.options}"
+      ng-model="#{desc.model}.#{field.name}"
+    )
+    p.help-block(
+      ng-show="#{field.options}.length === 0"
+    )= field.errorNoOptions
+
+mixin form-radio-buttons(desc, field)
+  .form-group
+    if field.label !== undefined
+      label= field.label
+    .btn-group
+      label.btn.btn-default(
+        ng-repeat="option in #{field.options}"
+        ng-model="#{desc.model}.#{field.name}"
+        btn-radio="option.name"
+      ) {{option.name}}
+
+mixin form-date(desc, field)
+  .form-group
+    label(for=field.name)= field.label
+    .input-group
+      input.form-control
+      span.input-group-btn
+        button.btn.btn-default
+          i.glyphicon.glyphicon-calendar
+
+mixin form-generic(desc, field)
+  - var invalid = desc.name + "." + field.name + ".$invalid";
+  - var touched = desc.name + '.' + field.name + '.$touched';
+  - var invalidAndTouched = invalid + " && " + touched;
+  .form-group(
+    ng-class="{ 'has-error': #{invalidAndTouched} }"
+  )
+    label(
+      for=field.name
+    )= field.label
+    input.form-control(
+      type=field.type
+      name=field.name
+      ng-model="#{desc.model}.#{field.name}"
+    )&attributes(field.attrs)
+    each error in field.errors
+      p.help-block(
+        ng-show="#{desc.name}.#{field.name}.$error.#{error.condition} && #{touched}"
+      )= error.msg
+
 mixin form(desc)
   form(
     name=desc.name
@@ -6,23 +69,24 @@ mixin form(desc)
   )
     .form-group.has-error(ng-show="#{desc.model}.errorMsg")
       p.help-block {{#{desc.model}.errorMsg}}
-    each field, index in desc.fields
-      - var invalid = desc.name + "." + field.name + ".$invalid"
-      - var pristine = desc.name + "." + field.name + ".$pristine"
-      - var invalidNotPristine = invalid + " && !" + pristine
-      .form-group(
-        ng-class="{ 'has-error': #{invalidNotPristine} }"
-        )
-        label(
-          for=field.name
-        )= field.label
-        input.form-control(
-          type=field.type
-          name=field.name
-          ng-model="#{desc.model}.#{field.name}"
-        )&attributes(field.attrs)
-        if field.errorMsg
-          p.help-block(
-            ng-show="#{invalidNotPristine}"
-          )= field.errorMsg
+    each field in desc.fields
+      if field.attrs === undefined
+        - field.attrs = {}
+      if field.errors === undefined
+        - field.errors = []
+      div(
+        ng-show=field.show
+        ng-disabled=field.disabled
+      )
+        if field.type === 'checkbox'
+          +form-checkbox(desc, field)
+        else if field.type === 'select'
+          +form-select(desc, field)
+        else if field.type === 'radio-buttons'
+          +form-radio-buttons(desc, field)
+        else if field.type === 'date'
+          +form-date(desc, field)
+        else
+          +form-generic(desc, field)
     block
+  

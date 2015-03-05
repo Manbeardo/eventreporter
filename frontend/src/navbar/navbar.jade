@@ -10,9 +10,7 @@ nav.navbar.navbar-default.navbar-fixed-top
     .navbar-collapse.navbar-right(collapse="isCollapsed")
       ul.navbar-nav.nav
         li.dropdown(dropdown="", ng-show="session.userid !== null")
-          a.dropdown-toggle(
-            href="",
-            dropdown-toggle="") {{session.userid}}&nbsp;
+          a.dropdown-toggle(dropdown-toggle="") {{session.userid}}&nbsp;
             span.glyphicon.glyphicon-user
             span.caret
           ul.dropdown-menu(role="menu")
@@ -21,6 +19,6 @@ nav.navbar.navbar-default.navbar-fixed-top
             li
               a(ng-href="#/editProfile") Edit profile
             li
-              a(href="", ng-click="logout()") Sign out
+              a(ng-click="logout()") Sign out
         li(ng-show="session.userid == null")
-          a(href="", ng-click="login()") Sign in
+          a(ng-click="login()") Sign in

@@ -38,20 +38,23 @@ mod.factory('AuthService', (Session)->
   }
 )
 
+badPasswordMsg = 'incorrect username/password combination'
+
 mod.factory 'LoginService', ($modal, AuthService, Session)->
   {
     login: ()->
       $modal.open
         template: require('./loginForm.jade')()
         controller: ($scope, $modalInstance, AuthService, Session)->
-          $scope.invalidCredentials = false
+          $scope.credentials = {}
+          $scope.credentials.errorMsg = null
 
           $scope.login = (credentials)->
             if AuthService.login(credentials)
               $modalInstance.close(Session)
               return true
             else
-              $scope.invalidCredentials = true
+              $scope.credentials.errorMsg = badPasswordMsg
               return false
 
           $scope.cancel = ()->
