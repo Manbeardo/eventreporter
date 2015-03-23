@@ -1,0 +1,10 @@
+include ../jadeMixins/mixins.jade
+
++loginWall
+  .container
+    h2(style='margin-bottom:20px;') Create a new event
+    +form(require('./createEvent.form.coffee'))
+      button.btn.btn-primary(
+        type="submit"
+        ng-disabled="createEventForm.$invalid"
+      ) Create event

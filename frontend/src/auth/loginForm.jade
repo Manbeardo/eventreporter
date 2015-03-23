@@ -4,14 +4,13 @@ include ../jadeMixins/form.jade
   h3.modal-title Sign in
 .modal-body
   +form(require('./loginForm.form.coffee'))
-    .form-group
-      button.btn.btn-primary#LoginSubmit(
-        type="submit"
-        ng-disabled="loginForm.$invalid"
-      ) Sign in
-      | &nbsp;
-      button.btn.btn-default#LoginCancel(
-        type="button"
-        ng-click="cancel()"
-      ) Cancel
-      a.pull-right.btn.btn-link(ui-sref="register", ng-click="cancel()") create a new account
+    button.btn.btn-primary#LoginSubmit(
+      type="submit"
+      ng-disabled="loginForm.$invalid"
+    ) Sign in
+    | &nbsp;
+    button.btn.btn-default#LoginCancel(
+      type="button"
+      ng-click="cancel()"
+    ) Cancel
+    a.pull-right.btn.btn-link(ui-sref="register", ng-click="cancel()") create a new account

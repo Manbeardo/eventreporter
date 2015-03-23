@@ -1,0 +1,31 @@
+.input-group
+  input.form-control(
+      type='text'
+      ng-model='newPlayer'
+  )
+  span.input-group-btn
+    button.btn.btn-primary(
+      type='submit'
+      ng-disabled='true'
+    )
+      span.glyphicon.glyphicon-plus
+      | &nbsp;Add Player
+table.table.table-striped(
+  ng-table=''
+)
+  tr
+    th First Name
+    th Last Name
+    th DCI Number
+  tr
+    td James
+    td Ribe
+    td 1110-496-089
+  tr
+    td Casey
+    td Hogan
+    td 1234567890
+  tr
+    td Kris
+    td Ferderer
+    td 12345678

@@ -10,5 +10,6 @@ module.exports = {
             { test: /\.coffee$/, loader: "coffee-loader"           },
             { test: /\.jade$/,   loader: "jade-loader"             }
         ]
-    }
+    },
+    plugins: []
 };

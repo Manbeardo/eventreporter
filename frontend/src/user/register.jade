@@ -4,8 +4,7 @@ include ../jadeMixins/form.jade
   section
     h1 Create a seating.io account
     +form(require('./register.form.coffee'))
-      .form-group
-        button.btn.btn-primary(
-          type="submit"
-          ng-disabled="registerForm.$invalid"
-        ) Create account
+      button.btn.btn-primary(
+        type="submit"
+        ng-disabled="registerForm.$invalid"
+      ) Create account

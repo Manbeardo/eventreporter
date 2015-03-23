@@ -1,3 +1,16 @@
+mixin form-offset
+  .col-sm-offset-2.col-sm-10
+    block
+
+mixin form-optional-label(label)
+  if label !== undefined && label !== null
+    label.col-sm-2.control-label&attributes(attributes)= label
+    .col-sm-10
+      block
+  else
+    +form-offset
+      block
+
 mixin form-checkbox(desc, field)
   .checkbox
     label
@@ -9,37 +22,51 @@ mixin form-checkbox(desc, field)
       | #{field.label}
 
 mixin form-select(desc, field)
+  .form-group
+    +form-optional-label(field.label)
+      select.form-control(
+        ng-model="#{desc.model}.#{field.name}"
+        ng-options="item as item.name for (_, item) in localFormConfig.fields.#{field.name}.options"
+      )
+
+mixin form-select-dynamic(desc, field)
   .form-group(
     ng-class="{ 'has-error': #{field.options}.length === 0 }"
   )
-    label= field.label
-    select.form-control(
-      ng-options="thing.name for thing in #{field.options}"
-      ng-model="#{desc.model}.#{field.name}"
-    )
-    p.help-block(
-      ng-show="#{field.options}.length === 0"
-    )= field.errorNoOptions
+    +form-optional-label(field.label)
+      select.form-control(
+        ng-options="thing.name for thing in #{field.options}"
+        ng-model="#{desc.model}.#{field.name}"
+      )
+      p.help-block(
+        ng-if="#{field.options}.length === 0"
+      )= field.errorNoOptions
 
 mixin form-radio-buttons(desc, field)
   .form-group
-    if field.label !== undefined
-      label= field.label
-    .btn-group
-      label.btn.btn-default(
-        ng-repeat="option in #{field.options}"
-        ng-model="#{desc.model}.#{field.name}"
-        btn-radio="option.name"
-      ) {{option.name}}
+    +form-optional-label(field.label)
+      .btn-group(role="group")
+        each option, key in field.options
+          button.btn.btn-default(
+            type="button"
+            ng-model="#{desc.model}.#{field.name}"
+            btn-radio=JSON.stringify(option)
+            ng-disabled=option.disabled
+          )= option.name
 
-mixin form-date(desc, field)
+mixin form-radio-bool-buttons(desc, field)
   .form-group
-    label(for=field.name)= field.label
-    .input-group
-      input.form-control
-      span.input-group-btn
-        button.btn.btn-default
-          i.glyphicon.glyphicon-calendar
+    +form-optional-label(field.label)
+      .btn-group(role="group")
+        if Object.keys(field.options).length !== 2 || field.options.true === undefined || field.options.false === undefined
+          p jade error: form-radio-bool-buttons got invalid options
+        else
+          each option, key in field.options
+            button.btn.btn-default(
+              type="button"
+              ng-model="#{desc.model}.#{field.name}"
+              btn-radio="#{key}"
+            )= option.name
 
 mixin form-generic(desc, field)
   - var invalid = desc.name + "." + field.name + ".$invalid";
@@ -48,45 +75,62 @@ mixin form-generic(desc, field)
   .form-group(
     ng-class="{ 'has-error': #{invalidAndTouched} }"
   )
-    label(
+    +form-optional-label(field.label)(
       for=field.name
-    )= field.label
-    input.form-control(
-      type=field.type
-      name=field.name
-      ng-model="#{desc.model}.#{field.name}"
-    )&attributes(field.attrs)
-    each error in field.errors
-      p.help-block(
-        ng-show="#{desc.name}.#{field.name}.$error.#{error.condition} && #{touched}"
-      )= error.msg
+    )
+      input.form-control(
+        type=field.type
+        name=field.name
+        ng-model="#{desc.model}.#{field.name}"
+      )&attributes(field.attrs)
+      each error in field.errors
+        p.help-block(
+          ng-if="#{desc.name}.#{field.name}.$error.#{error.condition} && #{touched}"
+        )= error.msg
 
 mixin form(desc)
-  form(
+  each field, key in desc.fields
+    if field.name === undefined
+      - field.name = key
+    if field.attrs === undefined
+      - field.attrs = {}
+    if field.errors === undefined
+      - field.errors = []
+    each error, key in field.errors
+      if error.condition === undefined
+        - error.condition = key
+  form.form-horizontal(
     name=desc.name
     ng-submit="#{desc.submit}(#{desc.model})"
     novalidata=""
+    ng-controller="FormConfigController"
+    form-config="#{JSON.stringify(desc)}"
   )
-    .form-group.has-error(ng-show="#{desc.model}.errorMsg")
+    .form-group.has-error(ng-if="#{desc.model}.errorMsg")
       p.help-block {{#{desc.model}.errorMsg}}
-    each field in desc.fields
-      if field.attrs === undefined
-        - field.attrs = {}
-      if field.errors === undefined
-        - field.errors = []
+    each field, key in desc.fields
+      if field.default !== undefined
+        - var defaultVal = field.default.toString()
       div(
-        ng-show=field.show
+        ng-if=field.show
         ng-disabled=field.disabled
+        ng-controller="FormFieldConfigController"
+        field-name="#{field.name}"
       )
-        if field.type === 'checkbox'
-          +form-checkbox(desc, field)
-        else if field.type === 'select'
-          +form-select(desc, field)
-        else if field.type === 'radio-buttons'
-          +form-radio-buttons(desc, field)
-        else if field.type === 'date'
-          +form-date(desc, field)
-        else
-          +form-generic(desc, field)
-    block
+        case field.type
+          when 'checkbox'
+            +form-checkbox(desc, field)
+          when 'select'
+            +form-select(desc, field)
+          when 'select-dynamic'
+            +form-select-dynamic(desc, field)
+          when 'radio-buttons'
+            +form-radio-buttons(desc, field)
+          when 'radio-bool-buttons'
+            +form-radio-bool-buttons(desc, field)
+          default
+            +form-generic(desc, field)
+    .form-group
+      +form-offset
+        block
   

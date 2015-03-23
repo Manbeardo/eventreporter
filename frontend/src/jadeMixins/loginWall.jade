@@ -1,0 +1,8 @@
+mixin loginWall
+  div(ng-controller='LoginWallController')
+    div(ng-show='!loggedIn()')
+      .container
+        h3 You must be signed in to access this page
+        button.btn.btn-default(ng-click='login()') Sign in
+    div(ng-show='loggedIn()')
+      block

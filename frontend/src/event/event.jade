@@ -1,0 +1,35 @@
+include ../jadeMixins/mixins.jade
+
+- var accordionCount = 0;
+
+mixin accordion-group(heading)
+  - accordionCount++;
+  - var isOpen = 'accordionGroup' + accordionCount.toString() + 'IsOpen';
+  accordion-group(
+    is-open='#{isOpen}'
+  )&attributes(attributes)
+    accordion-heading
+      | #{heading}
+      i.pull-right.glyphicon(
+        ng-class='{"glyphicon-chevron-down": #{isOpen}, "glyphicon-chevron-right": !#{isOpen}}'
+      )
+    block
+
++loginWall
+  .container
+    h1 THIS IS AN EVENT PAGE
+    div.well
+      h2 Enrolling Players
+      p Enrollment is currently open. Press 'done' when all players are enrolled.
+      p
+        a.btn.btn-success(ui-sref='event.home') Done
+    accordion(close-others='true')
+      +accordion-group('Players')
+        include eventPlayers.jade
+      +accordion-group('Rounds') ROUNDS
+      +accordion-group('Event Details')
+        +form(require('./eventSettings.form.coffee'))
+          button.btn.btn-primary(
+            type="submit"
+            ng-disabled="eventSettingsForm.$invalid"
+          ) Update event

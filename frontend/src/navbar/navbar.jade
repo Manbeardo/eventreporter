@@ -1,12 +1,30 @@
 nav.navbar.navbar-default.navbar-fixed-top
   .container
     .navbar-header
-      a.navbar-brand(ng-href="#/home") seating.io
+      a.navbar-brand(ui-sref="home") seating.io
       button.navbar-toggle(ng-click="isCollapsed = !isCollapsed")
         span.sr-only Toggle Navigation
         span.icon-bar
         span.icon-bar
         span.icon-bar
+    .navbar-collapse.navbar-left(
+      collapse="isCollapsed"
+      ng-if='Breadcrumbs.elements.length !== 0'
+      ng-class='{"singleton-breadcrumb": Breadcrumbs.elements.length === 1}'
+    )
+      ul.navbar-nav.nav(
+        style='cursor: default;'
+      )
+        ul.breadcrumb.list-inline()
+          li(
+            ng-repeat='element in Breadcrumbs.elements'
+            ng-class='{"active": $last}'
+          )
+            a(
+              ng-if='!$last',
+              ui-sref='{{element.sref}}'
+            ) {{element.name}}
+            | {{$last ? element.name : ''}}
     .navbar-collapse.navbar-right(collapse="isCollapsed")
       ul.navbar-nav.nav
         li.dropdown(dropdown="", ng-show="session.userid !== null")
@@ -15,9 +33,9 @@ nav.navbar.navbar-default.navbar-fixed-top
             span.caret
           ul.dropdown-menu(role="menu")
             li
-              a(ng-href="#/user/{{session.userid}}") View user page
+              a(ui-sref="user({userid: session.userid})") View user page
             li
-              a(ng-href="#/editProfile") Edit profile
+              a(ui-sref="editProfile") Edit profile
             li
               a(ng-click="logout()") Sign out
         li(ng-show="session.userid == null")

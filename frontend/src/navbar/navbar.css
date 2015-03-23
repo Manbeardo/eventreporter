@@ -1,3 +1,32 @@
 body {
     padding-top: 50px;
 }
+
+.nav .breadcrumb {
+    margin: 0 0;
+    background: none;
+}
+
+.nav .breadcrumb>li {
+    padding: 0 0;
+}
+
+.breadcrumb>li+li:before {
+    content: "/";
+}
+
+@media (max-width: 768px) {
+    .nav .breadcrumb {
+        padding: 7px 15px;
+    }
+
+    .singleton-breadcrumb {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .nav .breadcrumb {
+        padding: 15px 15px;
+    }
+}

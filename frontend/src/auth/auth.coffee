@@ -65,5 +65,7 @@ mod.factory 'LoginService', ($modal, AuthService, Session)->
       Session.setUserID null
       true
 
+    loggedIn: ()-> Session.userid?
+
     session: Session
   }
